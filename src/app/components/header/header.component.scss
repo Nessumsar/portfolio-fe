@@ -10,14 +10,12 @@ header {
     &.scrolled {
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       
-      .logo h1 {
-        color: white;
-        
+      .logo {
         span {
           color: #4285f4;
         }
       }
-      
+        
       nav ul li a {
         color: white;
         
