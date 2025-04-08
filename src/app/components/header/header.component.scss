@@ -8,11 +8,10 @@ header {
     transition: all 0.3s ease;
     
     &.scrolled {
-      background-color: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       
       .logo h1 {
-        color: #333;
+        color: white;
         
         span {
           color: #4285f4;
@@ -20,7 +19,7 @@ header {
       }
       
       nav ul li a {
-        color: #333;
+        color: white;
         
         &:hover {
           color: #4285f4;
@@ -130,7 +129,7 @@ header {
           margin: 1rem 0;
           
           a {
-            color: #333;
+            color: white;
             font-size: 1.2rem;
           }
         }
