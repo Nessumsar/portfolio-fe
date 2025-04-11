@@ -1,1 +1,57 @@
-<p>projects works!</p>
+<div class="project-container">
+    <div class="section">
+      <h2>Contribution Activity</h2>
+      <div class="commit-heatmap">
+        <div class="calendar-heading">
+          <div class="days-list">
+            <span *ngFor="let day of days" class="day-label">{{ day }}</span>
+          </div>
+          <div class="months-list">
+            <span *ngFor="let month of months" class="month-label">{{ month }}</span>
+          </div>
+        </div>
+        <div class="calendar-body">
+          <div *ngFor="let week of weeks" class="week">
+            <div *ngFor="let day of week" 
+                 class="day" 
+                 [ngClass]="['level-' + day.level]"
+                 [title]="getActivityTooltip(day)">
+            </div>
+          </div>
+        </div>
+        <div class="legend">
+          <span>Less</span>
+          <ul class="legend-labels">
+            <li class="legend-day level-0"></li>
+            <li class="legend-day level-1"></li>
+            <li class="legend-day level-2"></li>
+            <li class="legend-day level-3"></li>
+            <li class="legend-day level-4"></li>
+          </ul>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="section">
+      <h2>Recent Repositories</h2>
+      <div class="repos-list">
+        <div *ngFor="let repo of recentRepositories" class="repo-card">
+          <div class="repo-header">
+            <div class="platform-icon {{ repo.platform }}">
+              <i class="fab fa-{{ getPlatformIcon(repo.platform) }}"></i>
+            </div>
+            <h3 class="repo-name">
+              <a [href]="repo.url" target="_blank">{{ repo.name }}</a>
+            </h3>
+          </div>
+          <div class="repo-description">
+            {{ repo.description }}
+          </div>
+          <div class="repo-footer">
+            <span class="last-updated">Updated {{ getTimeAgo(repo.lastUpdated) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

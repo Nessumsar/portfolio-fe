@@ -1,9 +1,15 @@
-export interface Project {
+export interface Repository {
     id: number;
-    title: string;
+    name: string;
+    url: string;
+    lastUpdated: Date;
     description: string;
-    technologies: string[];
-    imageUrl?: string;
-    repoUrl?: string;
-    liveUrl?: string;
+    platform: 'github' | 'gitlab';
+}
+
+export interface CommitData {
+    date: string;
+    count: number;
+    platform: 'github' | 'gitlab';
+    repositoryId: number;
 }
