@@ -86,7 +86,8 @@ export class ProjectsComponent implements OnInit {
         this.commitData.push({
           date: this.formatDate(d),
           count: githubCount,
-          platform: 'github'
+          platform: 'github',
+          repositoryId : 1
         });
         
         // Add some gitlab commits as well
@@ -95,7 +96,8 @@ export class ProjectsComponent implements OnInit {
           this.commitData.push({
             date: this.formatDate(d),
             count: gitlabCount,
-            platform: 'gitlab'
+            platform: 'gitlab',
+            repositoryId : 2
           });
         }
       }
