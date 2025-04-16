@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -8,20 +8,18 @@ import { CommitData, Repository } from '../models/project.model';
     providedIn: 'root'
   })
 export class ProjectService {
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8080/api'; // Update with your actual backend URL
 
-private apiUrl = 'http://localhost:8080/api'; // Update with your actual backend URL
-
-  constructor(private http: HttpClient) { }
-
-  getRecentRepositories(limit: number = 5): Observable<Repository[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/repositories?limit=${limit}`).pipe(
+  getRecentRepositories(): Observable<Repository[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/repository`).pipe(
       map(repos => repos.map(repo => ({
         id: repo.id,
         name: repo.name,
-        url: repo.url,
+        url: repo.htmlUrl,
         lastUpdated: new Date(repo.lastUpdated),
         description: repo.description || 'No description available',
-        platform: repo.platform
+        platform: repo.platform.toLowerCase()
       }))),
       catchError(error => {
         console.error('Error fetching repositories:', error);

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommitData, Repository } from '../../models/project.model';
+import { ProjectService } from '../../services/project.service';
 
 
 @Component({
@@ -8,6 +9,7 @@ import { CommitData, Repository } from '../../models/project.model';
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss'],
   imports: [CommonModule],
+  providers: [ProjectService],
   // Make sure the component is standalone
   standalone: true
 })
@@ -15,6 +17,7 @@ import { CommitData, Repository } from '../../models/project.model';
 export class ProjectsComponent implements OnInit {
   recentRepositories: Repository[] = [];
   commitData: CommitData[] = [];
+  projectService = inject(ProjectService);
   
   // Calendar view data
   weeks: any[] = [];
@@ -24,56 +27,23 @@ export class ProjectsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.fetchRepositoryData();
     this.loadMockData();
     this.generateCalendarData();
   }
 
-  loadMockData(): void {
-    // Mock data for recent repositories
-    this.recentRepositories = [
-      {
-        id: 1,
-        name: 'angular-portfolio',
-        url: 'https://github.com/username/angular-portfolio',
-        lastUpdated: new Date(2025, 3, 9), // April 9, 2025
-        description: 'Personal portfolio website built with Angular',
-        platform: 'github'
-      },
-      {
-        id: 2,
-        name: 'data-visualization-lib',
-        url: 'https://gitlab.com/username/data-visualization-lib',
-        lastUpdated: new Date(2025, 3, 7), // April 7, 2025
-        description: 'Library for data visualization components',
-        platform: 'gitlab'
-      },
-      {
-        id: 3,
-        name: 'react-native-app',
-        url: 'https://github.com/username/react-native-app',
-        lastUpdated: new Date(2025, 3, 5), // April 5, 2025
-        description: 'Mobile application built with React Native',
-        platform: 'github'
-      },
-      {
-        id: 4,
-        name: 'api-gateway',
-        url: 'https://gitlab.com/username/api-gateway',
-        lastUpdated: new Date(2025, 3, 2), // April 2, 2025
-        description: 'API gateway service for microservices architecture',
-        platform: 'gitlab'
-      },
-      {
-        id: 5,
-        name: 'machine-learning-models',
-        url: 'https://github.com/username/machine-learning-models',
-        lastUpdated: new Date(2025, 2, 30), // March 30, 2025
-        description: 'Collection of machine learning models and examples',
-        platform: 'github'
-      }
-    ];
+  fetchRepositoryData(): void {
+    this.projectService.getRecentRepositories().subscribe(list => {
+      list.forEach(item => {
+        console.log(item)
+        this.recentRepositories.push(item);
+      })
+    })
+  }
 
-    // Generate mock commit data for the past year
+
+  loadMockData(): void {
+        // Generate mock commit data for the past year
     const today = new Date();
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(today.getFullYear() - 1);
