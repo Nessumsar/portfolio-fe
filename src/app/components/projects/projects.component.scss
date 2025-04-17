@@ -1,7 +1,7 @@
 /* project.component.scss */
 .project-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    color: #24292e;
+    color: #ffffff;
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
@@ -80,24 +80,62 @@
           background-color: #ebedf0;
         }
         
-        &.level-1 {
+        &.level-gh-1 {
           background-color: #9be9a8;
         }
         
-        &.level-2 {
+        &.level-gh-2 {
           background-color: #40c463;
         }
         
-        &.level-3 {
+        &.level-gh-3 {
           background-color: #30a14e;
         }
         
-        &.level-4 {
+        &.level-gh-4 {
           background-color: #216e39;
+        }
+
+        &.level-gl-1 {
+          background-color: #e29461;
+        }
+        
+        &.level-gl-2 {
+          background-color: #e08345;
+        }
+        
+        &.level-gl-3 {
+          background-color: #e7772c;
+        }
+        
+        &.level-gl-4 {
+          background-color: #ea650c;
+        }
+        
+        &.level-mix-1 {
+          background: linear-gradient(to right bottom ,#9be9a8 50%, #f094578b 50%);
+        }
+        
+        &.level-mix-2 {
+          background: linear-gradient(to right bottom,  #40c463 50%, #dc7c3be1 50%);
+        }
+        
+        &.level-mix-3 {
+          background: linear-gradient(to right bottom, #30a14e 50%, #ce6b29 50%);
+        }
+        
+        &.level-mix-4 {
+          background: linear-gradient(to right bottom, #216e39 50%, #b04c08 50%);
         }
       }
     }
   }
+
+  //.legend-wrapper {
+  //  position: absolute;
+  //  right: 0px;
+  //  top: 10px;
+  //}
   
   .legend {
     display: flex;
@@ -119,24 +157,56 @@
         margin: 0 1px;
         border-radius: 2px;
         
-        &.level-0 {
+        &.level-gh-0 {
           background-color: #ebedf0;
         }
         
-        &.level-1 {
+        &.level-gh-1 {
           background-color: #9be9a8;
         }
         
-        &.level-2 {
+        &.level-gh-2 {
           background-color: #40c463;
         }
         
-        &.level-3 {
+        &.level-gh-3 {
           background-color: #30a14e;
         }
         
-        &.level-4 {
+        &.level-gh-4 {
           background-color: #216e39;
+        }
+
+        &.level-gl-1 {
+          background-color: #f094578b;
+        }
+        
+        &.level-gl-2 {
+          background-color: #dc7c3be1;
+        }
+        
+        &.level-gl-3 {
+          background-color: #ce6b29;
+        }
+        
+        &.level-gl-4 {
+          background-color: #b04c08;
+        }
+        
+        &.level-mix-1 {
+          background: linear-gradient(to right bottom ,#9be9a8 50%, #f094578b 50%);
+        }
+        
+        &.level-mix-2 {
+          background: linear-gradient(to right bottom,  #40c463 50%, #dc7c3be1 50%);
+        }
+        
+        &.level-mix-3 {
+          background: linear-gradient(to right bottom, #30a14e 50%, #ce6b29 50%);
+        }
+        
+        &.level-mix-4 {
+          background: linear-gradient(to right bottom, #216e39 50%, #b04c08 50%);
         }
       }
     }
