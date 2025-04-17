@@ -12,11 +12,6 @@ export class HeaderComponent {
   isScrolled = false;
   isMobileMenuOpen = false;
 
-  @HostListener('window:scroll')
-  onWindowScroll() {
-    this.isScrolled = window.scrollY > 20;
-  }
-
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
