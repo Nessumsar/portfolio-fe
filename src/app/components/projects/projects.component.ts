@@ -10,146 +10,106 @@ import { ProjectService } from '../../services/project.service';
   styleUrls: ['./projects.component.scss'],
   imports: [CommonModule],
   providers: [ProjectService],
-  // Make sure the component is standalone
   standalone: true
 })
 
 export class ProjectsComponent implements OnInit {
+  projectService = inject(ProjectService);
   recentRepositories: Repository[] = [];
   commitData: CommitData[] = [];
-  projectService = inject(ProjectService);
-  
-  // Calendar view data
   weeks: any[] = [];
-  months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  days: string[] = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
-  
-  constructor() { }
+  months: string[] = [];
+  days: string[] = ['', 'Mon', '', 'Wed', '', 'Fri', '', 'Sun'];
 
   ngOnInit(): void {
     this.fetchRepositoryData();
-    this.loadMockData();
-    this.generateCalendarData();
+    this.fetchCommitData();
   }
 
   fetchRepositoryData(): void {
-    this.projectService.getRecentRepositories().subscribe(list => {
-      list.forEach(item => {
-        console.log(item)
-        this.recentRepositories.push(item);
-      })
-    })
+    this.projectService.getRecentRepositories().subscribe(data => {
+      this.recentRepositories = data;
+    });
   }
 
+  fetchCommitData(): void {
+    this.projectService.getCommitData().subscribe(data => {
+      this.commitData = data;
+      this.transformData(this.commitData);
+    });
+  }
 
-  loadMockData(): void {
-        // Generate mock commit data for the past year
-    const today = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
+  transformData(data: CommitData[]): void {
+    const dateMap = new Map<string, CommitData[]>();
 
-    // Generate random commit data
-    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      // Some days might have no commits
-      if (Math.random() > 0.3) {
-        const githubCount = Math.floor(Math.random() * 8);
-        this.commitData.push({
-          date: this.formatDate(d),
-          count: githubCount,
-          platform: 'github',
-          repositoryId : 1
-        });
-        
-        // Add some gitlab commits as well
-        if (Math.random() > 0.5) {
-          const gitlabCount = Math.floor(Math.random() * 5);
-          this.commitData.push({
-            date: this.formatDate(d),
-            count: gitlabCount,
-            platform: 'gitlab',
-            repositoryId : 2
-          });
-        }
+    // Group by date (YYYY-MM-DD)
+    data.forEach(item => {
+      const dateKey = item.date.toString();
+      if (!dateMap.has(dateKey)) {
+        dateMap.set(dateKey, []);
       }
-    }
-  }
+      dateMap.get(dateKey)!.push(item);
+    });
 
-  generateCalendarData(): void {
-    const today = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
-    oneYearAgo.setDate(oneYearAgo.getDate() - oneYearAgo.getDay());
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setFullYear(endDate.getFullYear() - 1);
+    startDate.setDate(startDate.getDate() - startDate.getDay() +1); //To get full weeeks, back to the Sunday
 
-    // Generate 53 weeks (approximately a year)
-    for (let weekIndex = 0; weekIndex < 53; weekIndex++) {
-      const week = [];
-      for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-        const currentDate = new Date(oneYearAgo);
-        currentDate.setDate(oneYearAgo.getDate() + (weekIndex * 7) + dayIndex);
-        
-        if (currentDate > today) {
-          // Future dates are not included
-          week.push({ date: null, level: 0, count: 0 });
-          continue;
-        }
+    const currentDate = new Date(startDate);
+    const grid: any[][] = [];
 
-        const dateStr = this.formatDate(currentDate);
-        
-        // Get combined commit counts for this date
-        let githubCount = 0;
-        let gitlabCount = 0;
-        
-        this.commitData.forEach(commit => {
-          if (commit.date === dateStr) {
-            if (commit.platform === 'github') {
-              githubCount += commit.count;
-            } else {
-              gitlabCount += commit.count;
-            }
-          }
-        });
-        
-        const totalCount = githubCount + gitlabCount;
-        
-        // Determine activity level (0-4)
-        let level = 0;
-        if (totalCount === 0) level = 0;
-        else if (totalCount <= 2) level = 1;
-        else if (totalCount <= 5) level = 2;
-        else if (totalCount <= 10) level = 3;
-        else level = 4;
-        
-        week.push({
-          date: currentDate,
-          level,
-          count: totalCount,
-          githubCount,
-          gitlabCount,
-          dateStr
-        });
+    let week: any[] = [];
+
+    while (currentDate <= endDate) {
+      const isoDate = currentDate.toISOString().split('T')[0];
+      const entries = dateMap.get(isoDate) || [];
+      const count = entries.reduce((sum, c) => sum + c.count, 0);
+      const platformSet = new Set(entries.map(c => c.platform));
+
+      const level = this.getHeatLevel(count);
+
+      week.push({ date: isoDate, count, platforms: Array.from(platformSet), level });
+
+      // Push weeks on sundays or todays date
+      if (currentDate.getDay() === 0 || currentDate.toDateString() === endDate.toDateString()) {
+        grid.push(week);
+        week = [];
       }
-      this.weeks.push(week);
+
+      currentDate.setDate(currentDate.getDate() + 1);
     }
+
+    this.weeks = grid;
+    this.setMonths();
   }
 
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  setMonths(): void {
+    let prevMonth = -1;
+    this.months = this.weeks.map(week => {
+      const d = new Date(week[0].date);
+      const m = d.getMonth();
+
+      if (m !== prevMonth) {
+        prevMonth = m;
+        return new Intl.DateTimeFormat('en-us', { month: 'short' }).format(d);
+      }
+      return '';
+    });
+  }
+
+  getHeatLevel(count: number): number {
+    if (count === 0) return 0;
+    if (count < 3) return 1;
+    if (count < 6) return 2;
+    if (count < 10) return 3;
+    return 4;
   }
 
   getActivityTooltip(day: any): string {
-    if (!day.date) return '';
-    const dateStr = this.formatDate(day.date);
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const formattedDate = `${monthNames[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`;
-    
-    if (day.count === 0) {
-      return `No contributions on ${formattedDate}`;
-    } else {
-      return `${day.count} contributions on ${formattedDate} (GitHub: ${day.githubCount}, GitLab: ${day.gitlabCount})`;
-    }
+    const platformText = day.platforms?.join(', ') || '';
+    console.log("platform " + platformText + " on day "+day.date)
+    return `${day.count} commits on ${day.date} (${platformText})`;
   }
 
   getPlatformIcon(platform: 'github' | 'gitlab'): string {
@@ -160,19 +120,11 @@ export class ProjectsComponent implements OnInit {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) {
-      return 'today';
-    } else if (diffDays === 1) {
-      return 'yesterday';
-    } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
-    } else if (diffDays < 30) {
-      const weeks = Math.floor(diffDays / 7);
-      return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
-    } else {
-      const months = Math.floor(diffDays / 30);
-      return `${months} ${months === 1 ? 'month' : 'months'} ago`;
-    }
+
+    if (diffDays === 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week(s) ago`;
+    return `${Math.floor(diffDays / 30)} month(s) ago`;
   }
 }

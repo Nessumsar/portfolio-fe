@@ -8,7 +8,7 @@ export interface Repository {
 }
 
 export interface CommitData {
-    date: string;
+    date: Date;
     count: number;
     platform: 'github' | 'gitlab';
     repositoryId: number;

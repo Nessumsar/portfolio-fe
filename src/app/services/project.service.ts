@@ -29,11 +29,11 @@ export class ProjectService {
   }
 
   getCommitData(): Observable<CommitData[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/commits`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/commit`).pipe(
       map(commits => commits.map(commit => ({
         date: commit.date,
         count: commit.count,
-        platform: commit.platform,
+        platform: commit.platform.toLowerCase(),
         repositoryId: commit.repositoryId
       }))),
       catchError(error => {
