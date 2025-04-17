@@ -9,8 +9,7 @@ import { ProjectService } from '../../services/project.service';
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss'],
   imports: [CommonModule],
-  providers: [ProjectService],
-  standalone: true
+  providers: [ProjectService]
 })
 
 export class ProjectsComponent implements OnInit {
@@ -106,9 +105,21 @@ export class ProjectsComponent implements OnInit {
     return 4;
   }
 
+  getHeatmapColor(day:any): string {
+    const heatLevel = this.getHeatLevel(day.count);
+    const platformText = day.platforms?.join(', ') || '';
+    if (platformText.includes("github") && platformText.includes("gitlab")) {
+      console.log(day)
+      return "mix-"+heatLevel //Half-half-scale
+    } else if (platformText.includes("github")) {
+      return "gh-"+heatLevel //Green-scale
+    } else if (platformText.includes("gitlab")) {
+      return "gl-"+heatLevel //Orange-scale
+    } else return "0" //Grey;
+  }
+
   getActivityTooltip(day: any): string {
     const platformText = day.platforms?.join(', ') || '';
-    console.log("platform " + platformText + " on day "+day.date)
     return `${day.count} commits on ${day.date} (${platformText})`;
   }
 

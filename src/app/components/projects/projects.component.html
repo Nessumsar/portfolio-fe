@@ -14,21 +14,45 @@
           <div *ngFor="let week of weeks" class="week">
             <div *ngFor="let day of week" 
                  class="day" 
-                 [ngClass]="['level-' + day.level]"
+                 [ngClass]="['level-' + getHeatmapColor(day)]"
                  [title]="getActivityTooltip(day)">
             </div>
           </div>
         </div>
-        <div class="legend">
-          <span>Less</span>
-          <ul class="legend-labels">
-            <li class="legend-day level-0"></li>
-            <li class="legend-day level-1"></li>
-            <li class="legend-day level-2"></li>
-            <li class="legend-day level-3"></li>
-            <li class="legend-day level-4"></li>
-          </ul>
-          <span>More</span>
+        <div class="legend-wrapper">
+          <div class="legend">
+            <span>Less</span>
+            <ul class="legend-labels">
+              <li class="legend-day level-gh-0"></li>
+              <li class="legend-day level-gh-1"></li>
+              <li class="legend-day level-gh-2"></li>
+              <li class="legend-day level-gh-3"></li>
+              <li class="legend-day level-gh-4"></li>
+            </ul>
+            <span>More</span>
+          </div>
+          <div class="legend">
+            <span>Less</span>
+            <ul class="legend-labels">
+              <li class="legend-day level-gh-0"></li>
+              <li class="legend-day level-gl-1"></li>
+              <li class="legend-day level-gl-2"></li>
+              <li class="legend-day level-gl-3"></li>
+              <li class="legend-day level-gl-4"></li>
+            </ul>
+            <span>More</span>
+          </div>
+          <div class="legend">
+            <span>Less</span>
+            <ul class="legend-labels">
+              <li class="legend-day level-gh-0"></li>
+              <li class="legend-day level-mix-1"></li>
+              <li class="legend-day level-mix-2"></li>
+              <li class="legend-day level-mix-3"></li>
+              <li class="legend-day level-mix-4"></li>
+            </ul>
+            <span>More</span>
+          </div>
         </div>
       </div>
     </div>
