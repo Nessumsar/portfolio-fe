@@ -21,6 +21,7 @@
   
   /* Commit Heatmap Styling */
   .commit-heatmap {
+    overflow: auto; 
     border: 1px solid #e1e4e8;
     border-radius: 6px;
     padding: 16px;
@@ -50,6 +51,7 @@
     
     .months-list {
       display: flex;
+      overflow: hidden; 
       margin-left: 55px;
       margin-top: 4px;
       
@@ -63,7 +65,8 @@
   }
   
   .calendar-body {
-    display: flex;
+    float: left;
+    display: flex; 
     
     .week {
       display: flex;
@@ -131,11 +134,11 @@
     }
   }
 
-  //.legend-wrapper {
-  //  position: absolute;
-  //  right: 0px;
-  //  top: 10px;
-  //}
+  .legend-wrapper {
+    float: right;
+    margin-top: 8px;
+    margin-left: 16px;
+  }
   
   .legend {
     display: flex;
