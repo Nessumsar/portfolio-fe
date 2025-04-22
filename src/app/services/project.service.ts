@@ -1,19 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CommitData, Repository } from '../models/project.model';
+import { ApiService } from './api.service';
 
 @Injectable({
     providedIn: 'root'
   })
 export class ProjectService {
-  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api'; // Update with your actual backend URL
+  private api = inject(ApiService);
 
   getRecentRepositories(): Observable<Repository[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/repository`).pipe(
-      map(repos => repos.map(repo => ({
+    return this.api.get('repository').pipe(
+      map(repos => repos.map((repo: any) => ({
         id: repo.id,
         name: repo.name,
         url: repo.htmlUrl,
@@ -29,8 +28,8 @@ export class ProjectService {
   }
 
   getCommitData(): Observable<CommitData[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/commit`).pipe(
-      map(commits => commits.map(commit => ({
+    return this.api.get('commit').pipe(
+      map(commits => commits.map((commit: any) => ({
         date: commit.date,
         count: commit.count,
         platform: commit.platform.toLowerCase(),
@@ -41,15 +40,5 @@ export class ProjectService {
         return throwError(() => new Error('Failed to fetch commit data. Check console for details.'));
       })
     );
-  }
-
-  /**
-   * Format date to YYYY-MM-DD
-   */
-  private formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 }

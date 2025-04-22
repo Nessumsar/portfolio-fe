@@ -41,7 +41,6 @@ export class ProjectsComponent implements OnInit {
   transformData(data: CommitData[]): void {
     const dateMap = new Map<string, CommitData[]>();
 
-    // Group by date (YYYY-MM-DD)
     data.forEach(item => {
       const dateKey = item.date.toString();
       if (!dateMap.has(dateKey)) {
