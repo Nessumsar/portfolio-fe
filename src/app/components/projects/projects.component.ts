@@ -108,7 +108,6 @@ export class ProjectsComponent implements OnInit {
     const heatLevel = this.getHeatLevel(day.count);
     const platformText = day.platforms?.join(', ') || '';
     if (platformText.includes("github") && platformText.includes("gitlab")) {
-      console.log(day)
       return "mix-"+heatLevel //Half-half-scale
     } else if (platformText.includes("github")) {
       return "gh-"+heatLevel //Green-scale
